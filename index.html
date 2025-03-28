@@ -1,22 +1,29 @@
-<!DOCTYPE html>
+
+    <!DOCTYPE html>
 <html>
 <head>
-    <title>Teachable Machine Classifier</title>
+    <title>Teachable Machine Image Classifier</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
 </head>
 <body>
-    <h1>Image Classifier</h1>
+    <h1>Teachable Machine Classifier</h1>
     <input type="file" id="uploadImage" accept="image/*">
     <p id="result">Waiting for image...</p>
 
     <script>
-        const URL = "https://teachablemachine.withgoogle.com/models/Lty3g-5XJ/"; // Replace this!
+        const URL = "https://teachablemachine.withgoogle.com/models/Lty3g-5XJ/";  // Your model link
 
         let model;
         async function loadModel() {
-            model = await tmImage.load(URL + "model.json", URL + "metadata.json");
-            console.log("Model Loaded");
+            try {
+                console.log("Loading model...");
+                model = await tmImage.load(URL + "model.json", URL + "metadata.json");
+                console.log("Model Loaded Successfully");
+            } catch (error) {
+                console.error("Error loading model:", error);
+                document.getElementById("result").innerText = "Error loading model!";
+            }
         }
         loadModel();
 
@@ -26,10 +33,18 @@
                 const img = document.createElement("img");
                 img.src = URL.createObjectURL(file);
                 img.onload = async () => {
-                    document.body.appendChild(img); // Show image
-                    const prediction = await model.predict(img);
-                    document.getElementById("result").innerText =
-                        prediction[0].className + ": " + (prediction[0].probability * 100).toFixed(2) + "%";
+                    document.body.appendChild(img);
+                    console.log("Image Loaded");
+
+                    try {
+                        const prediction = await model.predict(img);
+                        console.log("Prediction Result:", prediction);
+                        document.getElementById("result").innerText =
+                            prediction[0].className + ": " + (prediction[0].probability * 100).toFixed(2) + "%";
+                    } catch (error) {
+                        console.error("Error during prediction:", error);
+                        document.getElementById("result").innerText = "Prediction failed!";
+                    }
                 };
             }
         });
