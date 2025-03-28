@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Teachable Machine Image Classifier</title>
+    <title>Teachable Machine Classifier</title>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
 </head>
 <body>
-    <h1>Upload an Image for Classification</h1>
+    <h1>Image Classifier</h1>
     <input type="file" id="uploadImage" accept="image/*">
-    <p id="result">Waiting for an image...</p>
+    <p id="result">Waiting for image...</p>
 
     <script>
-        const URL = "https://teachablemachine.withgoogle.com/models/Lty3g-5XJ/";  // Replace with your model link
+        const URL = "https://teachablemachine.withgoogle.com/models/Lty3g-5XJ/"; // Replace this!
 
         let model;
         async function loadModel() {
@@ -26,8 +26,9 @@
                 const img = document.createElement("img");
                 img.src = URL.createObjectURL(file);
                 img.onload = async () => {
+                    document.body.appendChild(img); // Show image
                     const prediction = await model.predict(img);
-                    document.getElementById("result").innerText = 
+                    document.getElementById("result").innerText =
                         prediction[0].className + ": " + (prediction[0].probability * 100).toFixed(2) + "%";
                 };
             }
